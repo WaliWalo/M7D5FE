@@ -14,7 +14,7 @@ export default class Home extends Component {
   };
 
   addToBasket = async (product) => {
-    await addProductToCart(product._id, "");
+    await addProductToCart(product.id, "");
     let modified = this.state.modified + 1;
     this.setState({ modified });
     alert(product.name + " added to basket.");
@@ -30,7 +30,7 @@ export default class Home extends Component {
   };
 
   componentDidUpdate = (prevProp, prevState) => {
-    if (this.state.modified !== prevState.modified) {
+    if (this.state.modified > prevState.modified) {
       this.getBasketFromApi();
     }
   };
@@ -38,14 +38,14 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        {/* {this.state.basket ? (
+        {this.state.basket ? (
           <Basket
             basket={this.state.basket}
             handleModified={this.handleModified}
           />
         ) : (
           <h3>Empty Basket</h3>
-        )} */}
+        )}
 
         <ProductList addToBasket={this.addToBasket} />
       </div>

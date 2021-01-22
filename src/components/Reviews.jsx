@@ -8,9 +8,8 @@ const Reviews = (props) => {
   //productId
 
   const [review, setReview] = useState({
-    comment: "",
+    text: "",
     rate: 1,
-    elementId: "",
   });
   const [submittedSize, setSubmittedSize] = useState(0);
   const [reviews, setReviews] = useState([]);
@@ -18,14 +17,14 @@ const Reviews = (props) => {
 
   useEffect(() => {
     let newReview = { ...review };
-    newReview.elementId = props.productId;
+
     setReview(newReview);
   }, [props.productId]);
 
   const addReview = async (e) => {
     e.preventDefault();
     if (props.productId) {
-      const postedRev = await postReview(props.productId, review);
+      await postReview(props.productId, review);
       setSubmittedSize(submittedSize + 1);
     }
   };

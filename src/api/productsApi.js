@@ -58,18 +58,20 @@ export async function getSingleProduct(id) {
 }
 
 //UPDATE A PRODUCT
-export async function updateProduct(id, product) {
+export async function updateProducts(id, product) {
   try {
+    console.log(product, id);
     const response = await fetch(`${url}/products/${id}`, {
       method: "PUT",
-      header: new Headers("Content-Type", "application/json"),
+      header: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
     });
     if (response.ok) {
-      let data = response.json();
-      return data;
+      // let data = await response.json();
+      alert("SUCCESS");
+      // return data;
     } else {
-      let error = response.json();
+      let error = await response.json();
       return error;
     }
   } catch (error) {
@@ -96,7 +98,7 @@ export async function removeProduct(id) {
 // "/:id/reviews" GET ALL REVIEWS FOR A SINGLE PRODUCT
 export async function getAllReviews(productId) {
   try {
-    const response = await fetch(`${url}/products/${productId}/reviews`, {
+    const response = await fetch(`${url}/reviews/${productId}`, {
       method: "GET",
     });
     if (response.ok) {
@@ -114,7 +116,7 @@ export async function getAllReviews(productId) {
 // "/:id/reviews" POST A REVIEW FOR A PRODUCT
 export async function postReview(productId, review) {
   try {
-    const response = await fetch(`${url}/products/${productId}/reviews`, {
+    const response = await fetch(`${url}/reviews/${productId}/1`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(review),
@@ -156,7 +158,7 @@ export async function updateReview(reviewId, review) {
 //DELETE A REVIEW
 export async function deleteReview(reviewId) {
   try {
-    const response = await fetch(`${url}/products/${reviewId}/reviews`, {
+    const response = await fetch(`${url}/reviews/update/${reviewId}`, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -192,13 +194,12 @@ export async function postProductImage(productId, file) {
 }
 
 //POST product to cart
-export async function addProductToCart(productId, cartId) {
+export async function addProductToCart(productId, userId) {
   try {
-    cartId = "5f6b1991df85440017160811";
-    let response = await fetch(
-      `${url}/products/carts/${cartId}/addToCart/${productId}`,
-      { method: "POST" }
-    );
+    userId = 1;
+    let response = await fetch(`${url}/carts/${productId}/${userId}`, {
+      method: "POST",
+    });
     if (response.ok) {
       const data = await response.json();
       return data;
@@ -212,10 +213,10 @@ export async function addProductToCart(productId, cartId) {
 }
 
 //GET BASKET
-export async function getBasket(cartId) {
+export async function getBasket(userId) {
   try {
-    cartId = "5f6b1991df85440017160811";
-    let response = await fetch(`${url}/products/carts/${cartId}/`, {
+    userId = 1;
+    let response = await fetch(`${url}/carts/getCart/${userId}/`, {
       method: "GET",
     });
     if (response.ok) {
@@ -232,13 +233,12 @@ export async function getBasket(cartId) {
 }
 
 //DELETE ITEM FROM BASKET
-export async function removeItemFromBasket(cartId, productId) {
+export async function removeItemFromBasket(productId, userId) {
   try {
-    cartId = "5f6b1991df85440017160811";
-    let response = await fetch(
-      `${url}/products/carts/${cartId}/removeFromCart/${productId}`,
-      { method: "DELETE" }
-    );
+    userId = 1;
+    let response = await fetch(`${url}/carts/update/${productId}/${userId}`, {
+      method: "DELETE",
+    });
     if (response.ok) {
       const data = await response.json();
 

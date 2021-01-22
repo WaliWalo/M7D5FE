@@ -62,7 +62,7 @@ const ProductList = (props) => {
                       </Card.Text>
                       <Button
                         onClick={() => {
-                          setProductId(product._id);
+                          setProductId(product.id);
                           setModalShow(true);
                         }}
                         variant="primary"

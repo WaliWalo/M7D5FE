@@ -5,10 +5,12 @@ import {
   downloadList,
   getProductPdf,
   getProducts,
-  postProductImage,
+  postProduct,
+  removeProduct,
+  updateProducts,
 } from "../api/productsApi";
 import AddProductForm from "./AddProductForm";
-import { postProduct, removeProduct } from "../api/productsApi";
+import { postCategory } from "../api/categoriesApi";
 const BackOffice = (props) => {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
@@ -34,22 +36,28 @@ const BackOffice = (props) => {
 
   const fetchProducts = async () => {
     setLoading(true);
-    const products = await getProducts();
-    setProducts(products);
+    const allProducts = await getProducts();
+    setProducts(allProducts);
     setLoading(false);
   };
 
   const addProduct = async (e) => {
     e.preventDefault();
     if (update !== null) {
-      let updateResult = await updateProduct(update._id, update);
-      await postProductImage(update._id, image);
-      alert("SUCCESS");
+      let category = { name: product.category };
+      let postedCategory = await postCategory(category);
+      let newProduct = { ...product, categoryId: postedCategory.id };
+      // console.log(newProduct);
+      await updateProducts(product.id, newProduct);
+      //await postProductImage(update._id, image);
+
       setSubmittedSize(submittedSize + 1);
-      console.log(updateResult);
     } else {
-      let postedProduct = await postProduct(product);
-      await postProductImage(postedProduct._id, image);
+      let category = { name: product.category };
+      let postedCategory = await postCategory(category);
+      let newProduct = { ...product, categoryId: postedCategory.id };
+      let postedProduct = await postProduct(newProduct);
+      // await postProductImage(postedProduct._id, image);
 
       setSubmittedSize(submittedSize + 1);
       console.log(postedProduct.errors);
@@ -71,7 +79,8 @@ const BackOffice = (props) => {
   const deleteProduct = async (e) => {
     let id = e.target.id;
     console.log(e.currentTarget);
-    await removeProduct(id);
+    let res = await removeProduct(id);
+    alert(res);
     setSubmittedSize(submittedSize + 1);
   };
 
@@ -87,6 +96,7 @@ const BackOffice = (props) => {
   };
 
   const updateProduct = async (e, product) => {
+    product.category = product.category.name;
     setProduct(product);
     setUpdate(product);
   };
@@ -136,14 +146,14 @@ const BackOffice = (props) => {
                                 width: "50px",
                                 height: "50px",
                               }}
-                              src={`http://localhost:3001/${product._id}.jpg`}
+                              src={product.img}
                             />
                           </td>
                           <td>{product.name}</td>
                           <td>{product.description}</td>
                           <td>{product.brand}</td>
                           <td>{product.price}</td>
-                          <td>{product.category}</td>
+                          <td>{product.category.name}</td>
                           <td>
                             <Button
                               className="mr-2"
@@ -153,14 +163,14 @@ const BackOffice = (props) => {
                             </Button>
                             <Button
                               className="mr-2"
-                              id={product._id}
+                              id={product.id}
                               onClick={(e) => deleteProduct(e)}
                               variant="danger"
                             >
                               Remove
                             </Button>
                             <Button
-                              id={product._id}
+                              id={product.id}
                               onClick={(e) => downloadProduct(e)}
                               variant="success"
                             >
