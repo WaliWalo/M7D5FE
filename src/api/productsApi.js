@@ -20,11 +20,26 @@ export async function getProducts() {
 //POST A PRODUCT
 export async function postProduct(product) {
   try {
+    console.log(product);
+    let formdata = new FormData();
+    formdata.append("name", product.name);
+    formdata.append("image", product.imageUrl, product.imageUrl.name);
+    formdata.append("description", product.description);
+    formdata.append("price", product.price);
+    formdata.append("brand", product.brand);
+    formdata.append("categoryId", product.categoryId);
+
+    // const response = await fetch(`${url}/products/`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(product),
+    // });
+
     const response = await fetch(`${url}/products/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
+      body: formdata,
     });
+
     if (response.ok) {
       alert("success");
       let result = response.json();

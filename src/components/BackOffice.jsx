@@ -74,6 +74,8 @@ const BackOffice = (props) => {
   const fillImageForm = (e) => {
     console.log(e.target.files);
     setImage(e.target.files[0]);
+    let newProduct = { ...product, imageUrl: e.target.files[0] };
+    setProduct(newProduct);
   };
 
   const deleteProduct = async (e) => {
