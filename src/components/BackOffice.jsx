@@ -8,11 +8,7 @@ import {
   postProductImage,
 } from "../api/productsApi";
 import AddProductForm from "./AddProductForm";
-import {
-  postProduct,
-  removeProduct,
-  updateProductById,
-} from "../api/productsApi";
+import { postProduct, removeProduct } from "../api/productsApi";
 const BackOffice = (props) => {
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
@@ -39,22 +35,21 @@ const BackOffice = (props) => {
   const fetchProducts = async () => {
     setLoading(true);
     const products = await getProducts();
-    setProducts(products.products);
+    setProducts(products);
     setLoading(false);
   };
 
   const addProduct = async (e) => {
     e.preventDefault();
     if (update !== null) {
-      let updateResult = await updateProductById(update._id, product);
-      // await postProductImage(update._id, image);
-
+      let updateResult = await updateProduct(update._id, update);
+      await postProductImage(update._id, image);
       alert("SUCCESS");
       setSubmittedSize(submittedSize + 1);
       console.log(updateResult);
     } else {
       let postedProduct = await postProduct(product);
-      // await postProductImage(postedProduct._id, image);
+      await postProductImage(postedProduct._id, image);
 
       setSubmittedSize(submittedSize + 1);
       console.log(postedProduct.errors);
@@ -71,8 +66,6 @@ const BackOffice = (props) => {
   const fillImageForm = (e) => {
     console.log(e.target.files);
     setImage(e.target.files[0]);
-    let newProduct = { ...product, imageUrl: e.target.files[0] };
-    setProduct(newProduct);
   };
 
   const deleteProduct = async (e) => {
@@ -143,7 +136,7 @@ const BackOffice = (props) => {
                                 width: "50px",
                                 height: "50px",
                               }}
-                              src={product.imageUrl}
+                              src={`http://localhost:3001/${product._id}.jpg`}
                             />
                           </td>
                           <td>{product.name}</td>
@@ -166,13 +159,13 @@ const BackOffice = (props) => {
                             >
                               Remove
                             </Button>
-                            {/* <Button
+                            <Button
                               id={product._id}
                               onClick={(e) => downloadProduct(e)}
                               variant="success"
                             >
                               DOWNLOAD
-                            </Button> */}
+                            </Button>
                           </td>
                         </tr>
                       );
